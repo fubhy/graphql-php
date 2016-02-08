@@ -16,7 +16,7 @@ namespace Fubhy\GraphQL\Type\Definition\Types;
 class NonNullModifier extends Type implements TypeInterface, InputTypeInterface, OutputTypeInterface, ModifierInterface
 {
     /**
-     * @var \Fubhy\GraphQL\Type\Definition\Types\TypeInterface
+     * @var callable|\Fubhy\GraphQL\Type\Definition\Types\TypeInterface
      */
     protected $ofType;
 

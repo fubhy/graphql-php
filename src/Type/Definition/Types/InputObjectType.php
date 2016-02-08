@@ -20,6 +20,11 @@ class InputObjectType extends Type implements InputTypeInterface, NullableTypeIn
     protected $fields;
 
     /**
+     * @var array
+     */
+    protected $fieldMap;
+
+    /**
      * Constructor.
      *
      * @param string $name

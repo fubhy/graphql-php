@@ -12,7 +12,7 @@ class BooleanValue extends Node implements ValueInterface
     /**
      * Constructor.
      *
-     * @param string $value
+     * @param bool $value
      * @param \Fubhy\GraphQL\Language\Location $location
      */
     public function __construct($value, Location $location = NULL)

@@ -11,12 +11,7 @@ use Fubhy\GraphQL\Language\Node;
  * Scalars (or Enums) and are defined with a name and a series of coercion
  * functions used to ensure validity.
  */
-interface ScalarTypeInterface extends
-    OutputTypeInterface,
-    InputTypeInterface,
-    LeafTypeInterface,
-    NullableTypeInterface,
-    UnmodifiedTypeInterface
+interface ScalarTypeInterface extends OutputTypeInterface, InputTypeInterface, LeafTypeInterface, NullableTypeInterface, UnmodifiedTypeInterface
 {
     /**
      * @param mixed $value

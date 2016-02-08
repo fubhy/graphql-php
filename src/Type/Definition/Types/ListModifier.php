@@ -12,7 +12,7 @@ namespace Fubhy\GraphQL\Type\Definition\Types;
 class ListModifier extends Type implements TypeInterface, InputTypeInterface, OutputTypeInterface, NullableTypeInterface, ModifierInterface
 {
     /**
-     * @var \Fubhy\GraphQL\Type\Definition\Types\TypeInterface
+     * @var callable|\Fubhy\GraphQL\Type\Definition\Types\TypeInterface
      */
     protected $ofType;
 

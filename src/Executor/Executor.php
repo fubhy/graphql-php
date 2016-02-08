@@ -83,7 +83,7 @@ class Executor
      * @param Schema $schema
      * @param $root
      * @param Document $ast
-     * @param null $operationName
+     * @param string|null $operationName
      * @param array $args
      * @param $errors
      *
