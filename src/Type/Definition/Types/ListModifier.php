@@ -9,12 +9,7 @@ namespace Fubhy\GraphQL\Type\Definition\Types;
  * type. Lists are often created within the context of defining the fields of an
  * object type.
  */
-class ListModifier extends Type implements
-    TypeInterface,
-    InputTypeInterface,
-    OutputTypeInterface,
-    NullableTypeInterface,
-    ModifierInterface
+class ListModifier extends Type implements TypeInterface, InputTypeInterface, OutputTypeInterface, NullableTypeInterface, ModifierInterface
 {
     /**
      * @var \Fubhy\GraphQL\Type\Definition\Types\TypeInterface

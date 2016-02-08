@@ -12,10 +12,7 @@ use Fubhy\GraphQL\Type\Definition\InputObjectField;
  *
  * Using `NonNull` will ensure that a value must be provided by the query.
  */
-class InputObjectType extends Type implements
-    InputTypeInterface,
-    NullableTypeInterface,
-    UnmodifiedTypeInterface
+class InputObjectType extends Type implements InputTypeInterface, NullableTypeInterface, UnmodifiedTypeInterface
 {
     /**
      * @var array

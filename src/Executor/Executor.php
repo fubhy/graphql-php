@@ -49,7 +49,7 @@ class Executor
      * @param \Fubhy\GraphQL\Schema $schema
      * @param $root
      * @param \Fubhy\GraphQL\Language\Node\Document $ast
-     * @param null $operation
+     * @param string|null $operation
      * @param array|null $args
      *
      * @return array
@@ -213,7 +213,8 @@ class Executor
      */
     protected static function collectFields(ExecutionContext $context, ObjectType $type, SelectionSet $set, $fields, $visited)
     {
-        for ($i = 0; $i < count($set->get('selections')); $i++) {
+        $count = count($set->get('selections'));
+        for ($i = 0; $i < $count; $i++) {
             $selection = $set->get('selections')[$i];
             switch ($selection::KIND) {
                 case Node::KIND_FIELD:
@@ -479,7 +480,9 @@ class Executor
         // Collect sub-fields to execute to complete this value.
         $subFieldASTs = new \ArrayObject();
         $visitedFragmentNames = new \ArrayObject();
-        for ($i = 0; $i < count($asts); $i++) {
+
+        $count = count($asts);
+        for ($i = 0; $i < $count; $i++) {
             $selectionSet = $asts[$i]->get('selectionSet');
 
             if ($selectionSet) {

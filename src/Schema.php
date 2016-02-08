@@ -22,7 +22,7 @@ use Fubhy\GraphQL\Type\Introspection;
 class Schema
 {
     /**
-     * @var \Fubhy\GraphQL\Type\Definition\Types\ObjectType
+     * @var \Fubhy\GraphQL\Type\Definition\Types\ObjectType|null
      */
     protected $mutationType;
 
@@ -35,6 +35,11 @@ class Schema
      * @var \Fubhy\GraphQL\Type\Directives\DirectiveInterface[]
      */
     protected $directives;
+
+    /**
+     * @var \Fubhy\GraphQL\Type\Definition\Types\TypeInterface[]
+     */
+    protected $typeMap;
 
     /**
      * Constructor.
@@ -158,10 +163,7 @@ class Schema
 
         if ($type instanceof ObjectType || $type instanceof InterfaceType) {
             foreach ($type->getFields() as $fieldName => $field) {
-                if (!($args = $field->getArguments())) {
-                    // No arguments.
-                }
-
+                $args = $field->getArguments();
                 $reducedMap = array_reduce(array_map(function (FieldArgument $arg) {
                     return $arg->getType();
                 }, $args), [$this, 'typeMapReducer'], $reducedMap);

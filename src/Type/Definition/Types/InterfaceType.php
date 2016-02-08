@@ -12,10 +12,7 @@ use Fubhy\GraphQL\Type\Definition\FieldDefinition;
  * all types, as well as a function to determine which type is actually used
  * when the field is resolved.
  */
-class InterfaceType extends AbstractType implements
-    OutputTypeInterface,
-    CompositeTypeInterface,
-    NullableTypeInterface
+class InterfaceType extends AbstractType implements OutputTypeInterface, CompositeTypeInterface, NullableTypeInterface
 {
     /**
      * @var array

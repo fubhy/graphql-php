@@ -267,7 +267,7 @@ class Parser
      *
      * @throws \Exception
      */
-    function parseFragmentName()
+    protected function parseFragmentName()
     {
         if ($this->token->getValue() === 'on') {
             throw $this->unexpected();
@@ -657,7 +657,7 @@ class Parser
     /**
      * @return \Fubhy\GraphQL\Language\Node\NamedType
      */
-    function parseNamedType()
+    protected function parseNamedType()
     {
         $start = $this->token->getStart();
 

@@ -86,7 +86,7 @@ class TypeInfo
      *
      * @return FieldDefinition
      */
-    static protected function getFieldDefinition(Schema $schema, Type $parentType, Field $fieldAST)
+    protected static function getFieldDefinition(Schema $schema, Type $parentType, Field $fieldAST)
     {
         $name = $fieldAST->get('name')->get('value');
         $schemaMeta = Introspection::schemaMetaFieldDefinition();

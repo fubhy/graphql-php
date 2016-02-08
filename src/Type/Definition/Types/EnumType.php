@@ -16,12 +16,7 @@ use Fubhy\GraphQL\Type\Definition\EnumValueDefinition;
  * Note: If a value is not provided in a definition, the name of the enum value
  * will be used as it's internal value.
  */
-class EnumType extends Type implements
-    InputTypeInterface,
-    OutputTypeInterface,
-    LeafTypeInterface,
-    NullableTypeInterface,
-    UnmodifiedTypeInterface
+class EnumType extends Type implements InputTypeInterface, OutputTypeInterface, LeafTypeInterface, NullableTypeInterface, UnmodifiedTypeInterface
 {
     /**
      * @var array
@@ -32,6 +27,16 @@ class EnumType extends Type implements
      * @var \Fubhy\GraphQL\Type\Definition\EnumValueDefinition[]
      */
     protected $valueMap;
+
+    /**
+     * @var \Fubhy\GraphQL\Type\Definition\EnumValueDefinition[]
+     */
+    protected $valueLookup;
+
+    /**
+     * @var \Fubhy\GraphQL\Type\Definition\EnumValueDefinition[]
+     */
+    protected $nameLookup;
 
     /**
      * Constructor.

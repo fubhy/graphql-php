@@ -9,11 +9,7 @@ namespace Fubhy\GraphQL\Type\Definition\Types;
  * used to describe what types are possible as well as providing a function to
  * determine which type is actually used when the field is resolved.
  */
-class UnionType extends AbstractType implements
-    OutputTypeInterface,
-    CompositeTypeInterface,
-    NullableTypeInterface,
-    UnmodifiedTypeInterface
+class UnionType extends AbstractType implements OutputTypeInterface, CompositeTypeInterface, NullableTypeInterface, UnmodifiedTypeInterface
 {
     /**
      * @var array

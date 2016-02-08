@@ -15,6 +15,11 @@ class FieldDefinition
     protected $description;
 
     /**
+     * @var callable
+     */
+    protected $resolve;
+
+    /**
      * @var \Fubhy\GraphQL\Type\Definition\Types\OutputTypeInterface|callable
      */
     protected $type;
@@ -23,6 +28,11 @@ class FieldDefinition
      * @var array
      */
     protected $args = [];
+
+    /**
+     * @var array
+     */
+    protected $argMap;
 
     /**
      * @var string|null

@@ -13,11 +13,7 @@ namespace Fubhy\GraphQL\Type\Definition\Types;
  *
  * Note: The enforcement of non-nullability occurs within the executor.
  */
-class NonNullModifier extends Type implements
-    TypeInterface,
-    InputTypeInterface,
-    OutputTypeInterface,
-    ModifierInterface
+class NonNullModifier extends Type implements TypeInterface, InputTypeInterface, OutputTypeInterface, ModifierInterface
 {
     /**
      * @var \Fubhy\GraphQL\Type\Definition\Types\TypeInterface

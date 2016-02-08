@@ -14,11 +14,7 @@ use Fubhy\GraphQL\Type\Definition\FieldDefinition;
  * itself in a field, you can use a function expression (aka a closure or a
  * thunk) to supply the fields lazily.
  */
-class ObjectType extends Type implements
-    OutputTypeInterface,
-    CompositeTypeInterface,
-    NullableTypeInterface,
-    UnmodifiedTypeInterface
+class ObjectType extends Type implements OutputTypeInterface, CompositeTypeInterface, NullableTypeInterface, UnmodifiedTypeInterface
 {
     /**
      * @var array
