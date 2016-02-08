@@ -50,7 +50,7 @@ class ListModifier extends Type implements
      */
     public function getName()
     {
-        return '[' . (string) $this->ofType . ']';
+        return '[' . (string) $this->getWrappedType() . ']';
     }
 
     /**
