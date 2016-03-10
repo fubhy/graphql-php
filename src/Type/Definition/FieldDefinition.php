@@ -40,6 +40,11 @@ class FieldDefinition
     protected $deprecationReason;
 
     /**
+     * @var mixed
+     */
+    protected $resolveData;
+
+    /**
      * Constructor.
      *
      * @param array $config
@@ -57,6 +62,10 @@ class FieldDefinition
 
         if (isset($config['deprecationReason'])) {
             $this->deprecationReason = $config['deprecationReason'];
+        }
+
+        if (isset($config['resolveData'])) {
+            $this->resolveData = $config['resolveData'];
         }
     }
 
@@ -82,7 +91,7 @@ class FieldDefinition
     public function getType()
     {
         if (is_callable($this->type)) {
-            return call_user_func($this->type);
+            $this->type = call_user_func($this->type);
         }
 
         return $this->type;
@@ -94,6 +103,14 @@ class FieldDefinition
     public function getResolveCallback()
     {
         return $this->resolve;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResolveData()
+    {
+        return $this->resolveData;
     }
 
     /**

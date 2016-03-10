@@ -82,6 +82,54 @@ class Introspection
     protected static $typeMetaFieldDefinition;
 
     /**
+     * @param $source
+     * @return array|null
+     */
+    public static function resolveSchemaTypes($source) {
+        if ($source instanceof Schema) {
+            return array_values($source->getTypeMap());
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return \Fubhy\GraphQL\Type\Definition\Types\ObjectType|null
+     */
+    public static function resolveSchemaQueryType($source) {
+        if ($source instanceof Schema) {
+            return $source->getQueryType();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return \Fubhy\GraphQL\Type\Definition\Types\ObjectType|null
+     */
+    public static function resolveSchemaMutationType($source) {
+        if ($source instanceof Schema) {
+            return $source->getMutationType();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return \Fubhy\GraphQL\Type\Directives\DirectiveInterface[]|null
+     */
+    public static function resolveSchemaDirectives($source) {
+        if ($source instanceof Schema) {
+            return $source->getDirectives();
+        }
+
+        return NULL;
+    }
+
+    /**
      * @return \Fubhy\GraphQL\Type\Definition\Types\ObjectType
      */
     public static function schema()
@@ -91,43 +139,100 @@ class Introspection
                 'types' => [
                     'description' => 'A list of all types supported by this server.',
                     'type' => new NonNullModifier(new ListModifier(new NonNullModifier([__CLASS__, 'type']))),
-                    'resolve' => function ($source) {
-                        if ($source instanceof Schema) {
-                            return array_values($source->getTypeMap());
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveSchemaTypes'],
                 ],
                 'queryType' => [
                     'description' => 'The type that query operations will be rooted at.',
                     'type' => new NonNullModifier([__CLASS__, 'type']),
-                    'resolve' => function ($source) {
-                        if ($source instanceof Schema) {
-                            return $source->getQueryType();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveSchemaQueryType'],
                 ],
                 'mutationType' => [
                     'description' => 'If this server supports mutation, the type that mutation operations will be rooted at.',
                     'type' => [__CLASS__, 'type'],
-                    'resolve' => function ($source) {
-                        if ($source instanceof Schema) {
-                            return $source->getMutationType();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveSchemaMutationType'],
                 ],
                 'directives' => [
                     'description' => 'A list of all directives supported by this server.',
                     'type' => new NonNullModifier(new ListModifier(new NonNullModifier([__CLASS__, 'directive']))),
-                    'resolve' => function ($source) {
-                        if ($source instanceof Schema) {
-                            return $source->getDirectives();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveSchemaDirectives'],
                 ],
             ], [], NULL, 'A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query and mutation operations.');
         }
 
         return static::$schema;
+    }
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function resolveDirectiveName($source) {
+        if ($source instanceof DirectiveInterface) {
+            return $source->getName();
+        }
+
+        return NULL;
+    }
+
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function resolveDirectiveDescription($source) {
+        if ($source instanceof DirectiveInterface) {
+            return $source->getDescription();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function resolveDirectiveArguments($source) {
+        if ($source instanceof DirectiveInterface) {
+            return $source->getArguments();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return bool|null
+     */
+    public static function resolveDirectiveOnOperation($source) {
+        if ($source instanceof DirectiveInterface) {
+            return $source->onOperation();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return bool|null
+     */
+    public static function resolveDirectiveOnFragment($source) {
+        if ($source instanceof DirectiveInterface) {
+            return $source->onFragment();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return bool|null
+     */
+    public static function resolveDirectiveOnField($source) {
+        if ($source instanceof DirectiveInterface) {
+            return $source->onField();
+        }
+
+        return NULL;
     }
 
     /**
@@ -139,56 +244,184 @@ class Introspection
             static::$directive = new ObjectType('__Directive', [
                 'name' => [
                     'type' => new NonNullModifier(Type::stringType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof DirectiveInterface) {
-                            return $source->getName();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveDirectiveName'],
                 ],
                 'description' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof DirectiveInterface) {
-                            return $source->getDescription();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveDirectiveDescription'],
                 ],
-                  'args' => [
+                'args' => [
                     'type' => new NonNullModifier(new ListModifier(new NonNullModifier(self::inputValue()))),
-                    'resolve' => function ($source) {
-                        if ($source instanceof DirectiveInterface) {
-                            return $source->getArguments();
-                        }
-                    }
-                  ],
+                    'resolve' => [__CLASS__, 'resolveDirectiveArguments'],
+                ],
                 'onOperation' => [
                     'type' => new NonNullModifier(Type::booleanType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof DirectiveInterface) {
-                            return $source->onOperation();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveDirectiveOnOperation'],
                 ],
                 'onFragment' => [
                     'type' => new NonNullModifier(Type::booleanType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof DirectiveInterface) {
-                            return $source->onFragment();
-                        }
-                    }
+                  'resolve' => [__CLASS__, 'resolveDirectiveOnFragment'],
                 ],
                 'onField' => [
                     'type' => new NonNullModifier(Type::booleanType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof DirectiveInterface) {
-                            return $source->onField();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveDirectiveOnField'],
                 ],
             ]);
         }
 
         return static::$directive;
+    }
+
+    /**
+     * @param $source
+     * @return int
+     */
+    public static function resolveTypeKind($source) {
+        if ($source instanceof ScalarTypeInterface) {
+            return static::TYPEKIND_SCALAR;
+        }
+
+        if ($source instanceof ObjectType) {
+            return static::TYPEKIND_OBJECT;
+        }
+
+        if ($source instanceof EnumType) {
+            return static::TYPEKIND_ENUM;
+        }
+
+        if ($source instanceof InputObjectType) {
+            return static::TYPEKIND_INPUT_OBJECT;
+        }
+
+        if ($source instanceof InterfaceType) {
+            return static::TYPEKIND_INTERFACE;
+        }
+
+        if ($source instanceof UnionType) {
+            return static::TYPEKIND_UNION;
+        }
+
+        if ($source instanceof ListModifier) {
+            return static::TYPEKIND_LIST;
+        }
+
+        if ($source instanceof NonNullModifier) {
+            return static::TYPEKIND_NON_NULL;
+        }
+
+        throw new \LogicException(sprintf('Unknown kind of type %s.', (string) $source));
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveTypeName($source) {
+        if ($source instanceof TypeInterface) {
+            return $source->getName();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveTypeDescription($source) {
+        if ($source instanceof TypeInterface) {
+            return $source->getDescription();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @param array $args
+     * @return null|string
+     */
+    public static function resolveTypeFields($source, array $args) {
+        if ($source instanceof ObjectType || $source instanceof InterfaceType) {
+            $fields = $source->getFields();
+
+            if (empty($args['includeDeprecated'])) {
+                $fields = array_filter($fields, function (FieldDefinition $field) {
+                    return !$field->getDeprecationReason();
+                });
+            }
+
+            return array_values($fields);
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveTypeInterfaces($source) {
+        if ($source instanceof ObjectType) {
+            return $source->getInterfaces();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveTypePossibleTypes($source) {
+        if ($source instanceof InterfaceType || $source instanceof UnionType) {
+            return $source->getPossibleTypes();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @param array $args
+     * @return array
+     */
+    public static function resolveTypeEnumValues($source, array $args) {
+        if ($source instanceof EnumType) {
+            $values = $source->getValues();
+
+            if (empty($args['includeDeprecated'])) {
+                $values = array_filter($values, function (EnumValueDefinition $value) {
+                    return !$value->getDeprecationReason();
+                });
+            }
+
+            return array_values($values);
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return array|null
+     */
+    public static function resolveTypeEnumFields($source) {
+        if ($source instanceof InputObjectType) {
+            return array_values($source->getFields());
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return \Fubhy\GraphQL\Type\Definition\Types\TypeInterface
+     */
+    public static function resolveTypeOfType($source) {
+        if ($source instanceof ModifierInterface) {
+            return $source->getWrappedType();
+        }
     }
 
     /**
@@ -200,57 +433,15 @@ class Introspection
             static::$type = new ObjectType('__Type', [
                 'kind' => [
                     'type' => new NonNullModifier([__CLASS__, 'typeKind']),
-                    'resolve' => function ($source) {
-                        if ($source instanceof ScalarTypeInterface) {
-                            return static::TYPEKIND_SCALAR;
-                        }
-
-                        if ($source instanceof ObjectType) {
-                            return static::TYPEKIND_OBJECT;
-                        }
-
-                        if ($source instanceof EnumType) {
-                            return static::TYPEKIND_ENUM;
-                        }
-
-                        if ($source instanceof InputObjectType) {
-                            return static::TYPEKIND_INPUT_OBJECT;
-                        }
-
-                        if ($source instanceof InterfaceType) {
-                            return static::TYPEKIND_INTERFACE;
-                        }
-
-                        if ($source instanceof UnionType) {
-                            return static::TYPEKIND_UNION;
-                        }
-
-                        if ($source instanceof ListModifier) {
-                            return static::TYPEKIND_LIST;
-                        }
-
-                        if ($source instanceof NonNullModifier) {
-                            return static::TYPEKIND_NON_NULL;
-                        }
-
-                        throw new \LogicException(sprintf('Unknown kind of type %s.', (string) $source));
-                    },
+                    'resolve' => [__CLASS__, 'resolveTypeKind'],
                 ],
                 'name' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof TypeInterface) {
-                            return $source->getName();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveTypeName'],
                 ],
                 'description' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof TypeInterface) {
-                            return $source->getDescription();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveTypeDescription'],
                 ],
                 'fields' => [
                     'type' => new ListModifier(new NonNullModifier([__CLASS__, 'field'])),
@@ -260,35 +451,15 @@ class Introspection
                             'defaultValue' => FALSE,
                         ],
                     ],
-                    'resolve' => function ($source, array $args) {
-                        if ($source instanceof ObjectType || $source instanceof InterfaceType) {
-                            $fields = $source->getFields();
-
-                            if (empty($args['includeDeprecated'])) {
-                                $fields = array_filter($fields, function (FieldDefinition $field) {
-                                    return !$field->getDeprecationReason();
-                                });
-                            }
-
-                            return array_values($fields);
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveTypeFields'],
                 ],
                 'interfaces' => [
                     'type' => new ListModifier(new NonNullModifier([__CLASS__, 'type'])),
-                    'resolve' => function ($source) {
-                        if ($source instanceof ObjectType) {
-                            return $source->getInterfaces();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveTypeInterfaces'],
                 ],
                 'possibleTypes' => [
                     'type' => new ListModifier(new NonNullModifier([__CLASS__, 'type'])),
-                    'resolve' => function ($source) {
-                        if ($source instanceof InterfaceType || $source instanceof UnionType) {
-                            return $source->getPossibleTypes();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveTypePossibleTypes'],
                 ],
                 'enumValues' => [
                     'type' => new ListModifier(new NonNullModifier([__CLASS__, 'enumValue'])),
@@ -298,40 +469,92 @@ class Introspection
                             'defaultValue' => FALSE,
                         ],
                     ],
-                    'resolve' => function ($source, array $args) {
-                        if ($source instanceof EnumType) {
-                            $values = $source->getValues();
-
-                            if (empty($args['includeDeprecated'])) {
-                                $values = array_filter($values, function (EnumValueDefinition $value) {
-                                    return !$value->getDeprecationReason();
-                                });
-                            }
-
-                            return array_values($values);
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveTypeEnumValues'],
                 ],
                 'inputFields' => [
                     'type' => new ListModifier(new NonNullModifier([__CLASS__, 'inputValue'])),
-                    'resolve' => function ($source) {
-                        if ($source instanceof InputObjectType) {
-                            return array_values($source->getFields());
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveTypeInputFields'],
                 ],
                 'ofType' => [
                     'type' => [__CLASS__, 'type'],
-                    'resolve' => function ($source) {
-                        if ($source instanceof ModifierInterface) {
-                            return $source->getWrappedType();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveTypeOfType'],
                 ],
             ]);
         }
 
         return static::$type;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveFieldName($source) {
+        if ($source instanceof FieldDefinition) {
+            return $source->getName();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveFieldDescription($source) {
+        if ($source instanceof FieldDefinition) {
+            return $source->getDescription();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveFieldArguments($source) {
+        if ($source instanceof FieldDefinition) {
+            return $source->getArguments() ?: [];
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveFieldType($source) {
+        if ($source instanceof FieldDefinition) {
+            return $source->getType();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return bool|null
+     */
+    public static function resolveFieldIsDeprecated($source) {
+        if ($source instanceof FieldDefinition) {
+            return (bool)$source->getDeprecationReason();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveFieldDeprecationReason($source) {
+        if ($source instanceof FieldDefinition) {
+            return $source->getDeprecationReason();
+        }
+
+        return NULL;
     }
 
     /**
@@ -343,56 +566,81 @@ class Introspection
             static::$field = new ObjectType('__Field', [
                 'name' => [
                     'type' => new NonNullModifier(Type::stringType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof FieldDefinition) {
-                            return $source->getName();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveFieldName'],
                 ],
                 'description' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof FieldDefinition) {
-                            return $source->getDescription();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveFieldDescription'],
                 ],
                 'args' => [
                     'type' => new NonNullModifier(new ListModifier(new NonNullModifier([__CLASS__, 'inputValue']))),
-                    'resolve' => function ($source) {
-                        if ($source instanceof FieldDefinition) {
-                            return $source->getArguments() ?: [];
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveFieldArguments'],
                 ],
                 'type' => [
                     'type' => new NonNullModifier([__CLASS__, 'type']),
-                    'resolve' => function ($source) {
-                        if ($source instanceof FieldDefinition) {
-                            return $source->getType();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveFieldType'],
                 ],
                 'isDeprecated' => [
                     'type' => new NonNullModifier(Type::booleanType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof FieldDefinition) {
-                            return (bool)$source->getDeprecationReason();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveFieldIsDeprecated'],
                 ],
                 'deprecationReason' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof FieldDefinition) {
-                            return $source->getDeprecationReason();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveFieldDeprecationReason'],
                 ],
             ]);
         }
 
         return static::$field;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveInputValueName($source) {
+        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
+            return $source->getName();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return null|string
+     */
+    public static function resolveInputValueDescription($source) {
+        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
+            return $source->getDescription();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return \Fubhy\GraphQL\Type\Definition\Types\InputTypeInterface
+     */
+    public static function resolveInputValueType($source) {
+        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
+            return $source->getType();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return \Fubhy\GraphQL\Type\Definition\Types\InputTypeInterface
+     */
+    public static function resolveInputValueDefaultValue($source) {
+        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
+            $defaultValue = $source->getDefaultValue();
+            return isset($defaultValue) ? json_encode($defaultValue) : NULL;
+        }
+
+        return NULL;
     }
 
     /**
@@ -404,41 +652,72 @@ class Introspection
             static::$inputValue = new ObjectType('__InputValue', [
                 'name' => [
                     'type' => new NonNullModifier(Type::stringType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
-                            return $source->getName();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveInputValueName'],
                 ],
                 'description' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
-                            return $source->getDescription();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveInputValueDescription'],
                 ],
                 'type' => [
                     'type' => new NonNullModifier([__CLASS__, 'type']),
-                    'resolve' => function ($source) {
-                        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
-                            return $source->getType();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveInputValueType'],
                 ],
                 'defaultValue' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof InputObjectField || $source instanceof FieldArgument) {
-                            $defaultValue = $source->getDefaultValue();
-                            return isset($defaultValue) ? json_encode($defaultValue) : NULL;
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveInputValueDefaultValue'],
                 ],
             ]);
         }
 
         return static::$inputValue;
+    }
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function resolveEnumValueName($source) {
+        if ($source instanceof EnumValueDefinition) {
+            return $source->getName();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function resolveEnumValueDescription($source) {
+        if ($source instanceof EnumValueDefinition) {
+            return $source->getDescription();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function resolveEnumValueIsDeprecated($source) {
+        if ($source instanceof EnumValueDefinition) {
+            return (bool) $source->getDeprecationReason();
+        }
+
+        return NULL;
+    }
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function resolveEnumValueDeprecationReason($source) {
+        if ($source instanceof EnumValueDefinition) {
+            return (bool) $source->getDeprecationReason();
+        }
+
+        return NULL;
     }
 
     /**
@@ -450,35 +729,19 @@ class Introspection
             static::$enumValue = new ObjectType('__EnumValue', [
                 'name' => [
                     'type' => new NonNullModifier(Type::stringType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof EnumValueDefinition) {
-                            return $source->getName();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveEnumValueName'],
                 ],
                 'description' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof EnumValueDefinition) {
-                            return $source->getDescription();
-                        }
-                    }
+                    'resolve' => [__CLASS__, 'resolveEnumValueDescription'],
                 ],
                 'isDeprecated' => [
                     'type' => new NonNullModifier(Type::booleanType()),
-                    'resolve' => function ($source) {
-                        if ($source instanceof EnumValueDefinition) {
-                            return (bool) $source->getDeprecationReason();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveEnumValueIsDeprecated'],
                 ],
                 'deprecationReason' => [
                     'type' => Type::stringType(),
-                    'resolve' => function ($source) {
-                        if ($source instanceof EnumValueDefinition) {
-                            return $source->getDeprecationReason();
-                        }
-                    },
+                    'resolve' => [__CLASS__, 'resolveEnumValueDeprecationReason'],
                 ],
             ]);
         }
@@ -532,6 +795,20 @@ class Introspection
     }
 
     /**
+     * @param $a
+     * @param $b
+     * @param $c
+     * @param $d
+     * @param $e
+     * @param $f
+     * @param $schema
+     * @return mixed
+     */
+    public static function resolveSchemaMetaField($a, $b, $c, $d, $e, $f, $schema) {
+        return $schema;
+    }
+
+    /**
      * @return \Fubhy\GraphQL\Type\Definition\FieldDefinition
      */
     public static function schemaMetaFieldDefinition()
@@ -542,13 +819,25 @@ class Introspection
                 'type' => new NonNullModifier([__CLASS__, 'schema']),
                 'description' => 'Access the current type schema of this server.',
                 'args' => [],
-                'resolve' => function ($a, $b, $c, $d, $e, $f, $schema) {
-                    return $schema;
-                }
+                'resolve' => [__CLASS__, 'resolveSchemaMetaField']
             ]);
         }
 
         return static::$schemaMetaFieldDefinition;
+    }
+
+    /**
+     * @param $a
+     * @param array $args
+     * @param $b
+     * @param $c
+     * @param $d
+     * @param $e
+     * @param \Fubhy\GraphQL\Schema $schema
+     * @return \Fubhy\GraphQL\Type\Definition\Types\TypeInterface
+     */
+    public static function resolveTypeMetaField($a, array $args, $b, $c, $d, $e, Schema $schema) {
+        return $schema->getType($args['name']);
     }
 
     /**
@@ -565,12 +854,23 @@ class Introspection
                     'name' => 'name',
                     'type' => new NonNullModifier(Type::stringType())
                 ]],
-                'resolve' => function ($a, array $args, $b, $c, $d, $e, Schema $schema) {
-                    return $schema->getType($args['name']);
-                }
+                'resolve' => [__CLASS__, 'resolveTypeMetaField'],
             ]);
         }
         return static::$typeMetaFieldDefinition;
+    }
+
+    /**
+     * @param $a
+     * @param $b
+     * @param $c
+     * @param $d
+     * @param $e
+     * @param \Fubhy\GraphQL\Type\Definition\Types\TypeInterface $parentType
+     * @return string
+     */
+    public static function resolveTypeNameMetaField($a, $b, $c, $d, $e, TypeInterface $parentType) {
+        return $parentType->getName();
     }
 
     /**
@@ -584,9 +884,7 @@ class Introspection
                 'type' => new NonNullModifier(Type::stringType()),
                 'description' => 'The name of the current Object type at runtime.',
                 'args' => [],
-                'resolve' => function ($a, $b, $c, $d, $e, TypeInterface $parentType) {
-                    return $parentType->getName();
-                }
+                'resolve' => [__CLASS__, 'resolveTypeNameMetaField'],
             ]);
         }
 

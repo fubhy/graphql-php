@@ -40,7 +40,7 @@ class NonNullModifier extends Type implements TypeInterface, InputTypeInterface,
     public function getWrappedType()
     {
         if (is_callable($this->ofType)) {
-            return call_user_func($this->ofType);
+            $this->ofType = call_user_func($this->ofType);
         }
 
         return $this->ofType;

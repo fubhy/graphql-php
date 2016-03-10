@@ -388,10 +388,12 @@ class Executor
         $ast = $asts[0];
         $type = $definition->getType();
         $resolver = $definition->getResolveCallback() ?: [__CLASS__, 'defaultResolveFn'];
+        $data = $definition->getResolveData();
         $args = Values::getArgumentValues($definition->getArguments(), $ast->get('arguments'), $context->variables);
 
         try {
-            $result = call_user_func($resolver, $source, $args, $context->root, $ast, $type, $parent, $context->schema);
+            // @todo Change the resolver function syntax to use a value object.
+            $result = call_user_func($resolver, $source, $args, $context->root, $ast, $type, $parent, $context->schema, $data);
         } catch (\Exception $error) {
             throw $error;
         }
