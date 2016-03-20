@@ -72,9 +72,19 @@ class ObjectType extends Type implements OutputTypeInterface, CompositeTypeInter
 
                 $this->fieldMap[$name] = new FieldDefinition($field);
             }
+
+            unset($this->fields);
         }
 
         return $this->fieldMap;
+    }
+
+    /**
+     * @param array $fields
+     */
+    public function setFields(array $fields) {
+        unset($this->fields);
+        $this->fieldMap = $fields;
     }
 
     /**

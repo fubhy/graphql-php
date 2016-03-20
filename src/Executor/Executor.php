@@ -306,7 +306,7 @@ class Executor
         }
 
         $conditionalType = TypeInfo::typeFromAST($context->schema, $typeCondition);
-        if ($conditionalType === $type) {
+        if ($conditionalType->getName() === $type->getName()) {
             return TRUE;
         }
 

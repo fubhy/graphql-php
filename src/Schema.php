@@ -144,7 +144,15 @@ class Schema
             return $this->typeMapReducer($map, $type->getWrappedType());
         }
 
-        if (!$type instanceof TypeInterface || !empty($map[$type->getName()])) {
+        if (!$type instanceof TypeInterface) {
+            return $map;
+        }
+
+        if (!empty($map[$type->getName()])) {
+            if ($type instanceof ObjectType || $type instanceof InterfaceType) {
+                $type->setFields($map[$type->getName()]->getFields());
+            }
+
             return $map;
         }
 
@@ -173,5 +181,16 @@ class Schema
         }
 
         return $reducedMap;
+    }
+
+    /**
+     * Re-populate static properties when de-serializing.
+     */
+    public function __wakeup() {
+        Type::intType();
+        Type::booleanType();
+        Type::floatType();
+        Type::idType();
+        Type::stringType();
     }
 }

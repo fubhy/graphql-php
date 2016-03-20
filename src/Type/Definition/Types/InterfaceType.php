@@ -80,9 +80,19 @@ class InterfaceType extends AbstractType implements OutputTypeInterface, Composi
 
                 $this->fieldMap[$name] = new FieldDefinition($field);
             }
+
+            unset($this->fields);
         }
 
         return $this->fieldMap;
+    }
+
+    /**
+     * @param array $fields
+     */
+    public function setFields(array $fields) {
+        unset($this->fields);
+        $this->fieldMap = $fields;
     }
 
     /**
