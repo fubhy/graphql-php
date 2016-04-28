@@ -406,7 +406,7 @@ class Introspection
      * @param $source
      * @return array|null
      */
-    public static function resolveTypeEnumFields($source) {
+    public static function resolveTypeInputFields($source) {
         if ($source instanceof InputObjectType) {
             return array_values($source->getFields());
         }
